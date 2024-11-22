@@ -12,4 +12,5 @@ import com.example.appliance_registry.model.entities.appliances.Fridge;
 @Repository
 public interface FridgeRepository extends JpaRepository<Fridge, Long> {
 
+    Fridge findByNameIgnoreCase(String name);
 }

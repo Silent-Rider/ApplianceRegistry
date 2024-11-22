@@ -13,7 +13,7 @@ public class Appliance {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
 
     @Column(nullable = false)
@@ -27,6 +27,8 @@ public class Appliance {
 
     @Column(name = "installment_option", nullable = false)
     private Boolean installmentOption;
+
+    
 
     public Long getId() {
         return id;
@@ -74,5 +76,13 @@ public class Appliance {
 
     public void setInstallmentOption(Boolean installmentOption) {
         this.installmentOption = installmentOption;
+    }
+
+    private enum Type{
+        COMPUTER,
+        FRIDGE,
+        SMARTPHONE,
+        TV,
+        VACUUM
     }
 }

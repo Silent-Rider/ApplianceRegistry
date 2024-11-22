@@ -12,4 +12,5 @@ import com.example.appliance_registry.model.entities.appliances.TV;
 @Repository
 public interface TVRepository extends JpaRepository<TV, Long>{
 
+    TV findByNameIgnoreCase(String name);
 }

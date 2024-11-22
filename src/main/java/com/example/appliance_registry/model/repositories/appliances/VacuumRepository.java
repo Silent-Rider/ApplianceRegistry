@@ -12,4 +12,5 @@ import com.example.appliance_registry.model.entities.appliances.Vacuum;
 @Repository
 public interface VacuumRepository extends JpaRepository<Vacuum, Long> {
 
+    Vacuum findByNameIgnoreCase(String name);
 }

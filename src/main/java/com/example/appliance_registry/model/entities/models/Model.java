@@ -15,7 +15,7 @@ public class Model {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @Column(name = "serial_number", nullable = false)
+    @Column(name = "serial_number", nullable = false, unique = true)
     private String serialNumber;
 
     @Column(nullable = false)

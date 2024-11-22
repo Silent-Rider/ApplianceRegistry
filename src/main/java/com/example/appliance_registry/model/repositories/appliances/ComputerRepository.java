@@ -12,4 +12,5 @@ import com.example.appliance_registry.model.entities.appliances.Computer;
 @Repository
 public interface ComputerRepository extends JpaRepository <Computer, Long> {
     
+    Computer findByNameIgnoreCase(String name);
 }
