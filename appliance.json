@@ -1,0 +1,8 @@
+{
+    "type": "computer",
+    "name": "Lenovo ThinkPad",
+    "country": "China",
+    "manufacturer": "Lenovo",
+    "availableOnline": true,
+    "installmentOption": true
+}

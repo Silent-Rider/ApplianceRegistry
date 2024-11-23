@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import com.example.appliance_registry.dto.*;
 import com.example.appliance_registry.model.FilterManager;
 import com.example.appliance_registry.model.entities.Appliance;
 import com.example.appliance_registry.model.entities.Model;
@@ -31,7 +32,7 @@ public class ModelController {
         this.applianceService = applianceService;
     }
     @GetMapping("/models")    
-    public ResponseEntity<Page<Model>> search( @RequestParam(required = false) String applianceName,
+    public ResponseEntity<Page<ModelDTO>> search( @RequestParam(required = false) String applianceName,
             @RequestParam(required = false) String modelName,
             @RequestParam(required = false) String type,
             @RequestParam(required = false) String color,
@@ -73,15 +74,29 @@ public class ModelController {
                 sort = sortDirection.equalsIgnoreCase("DESC") ? sort.descending() : sort.ascending();
                 PageRequest pageRequest = PageRequest.of(page, size, sort);
                 Page<Model> models = modelService.findAllModels(spec, pageRequest);
-                return ResponseEntity.ok(models);
+                Page<ModelDTO> modelDTOs = models.map(model -> {
+                    ModelDTO dto = null;
+                    switch(model.getAppliance().getType()){
+                        case Appliance.Type.COMPUTER -> dto = new ComputerDTO();
+                        case Appliance.Type.FRIDGE -> dto = new FridgeDTO();
+                        case Appliance.Type.SMARTPHONE -> dto = new SmartphoneDTO();
+                        case Appliance.Type.TV -> dto = new TVDTO();
+                        case Appliance.Type.VACUUM -> dto = new VacuumDTO();
+                    }
+                    if(dto != null)
+                        dto.loadFromModel(model);
+                    return dto;
+                });
+                return ResponseEntity.ok(modelDTOs);
 
     }
 
     @PostMapping("/{type}/{applianceName}/models")   
     public ResponseEntity<Model> addModel(@PathVariable String type,
     @PathVariable String applianceName, @RequestBody Model model){
+        type = type.toUpperCase();
         try{
-            Appliance.Type.valueOf(type.toUpperCase());
+            Appliance.Type.valueOf(type);
         } catch (IllegalArgumentException e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
