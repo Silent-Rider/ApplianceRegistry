@@ -1,12 +1,14 @@
-package com.example.appliance_registry.model.entities.appliances;
+package com.example.appliance_registry.model.entities;
 
 import jakarta.persistence.*;
+import java.util.List;
 
 /**
  * @author silent_rider
  */
 
-@MappedSuperclass
+@Entity
+@Table(name = "appliances")
 public class Appliance {
     
     @Id
@@ -28,7 +30,12 @@ public class Appliance {
     @Column(name = "installment_option", nullable = false)
     private Boolean installmentOption;
 
-    
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Type type;
+
+    @OneToMany(mappedBy = "appliance", cascade = CascadeType.ALL)
+    List<Model> models;
 
     public Long getId() {
         return id;
@@ -78,7 +85,23 @@ public class Appliance {
         this.installmentOption = installmentOption;
     }
 
-    private enum Type{
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+    public List<Model> getModels() {
+        return models;
+    }
+
+    public void setModels(List<Model> models) {
+        this.models = models;
+    }
+
+    public enum Type{
         COMPUTER,
         FRIDGE,
         SMARTPHONE,
