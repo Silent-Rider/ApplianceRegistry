@@ -50,7 +50,7 @@ public class ModelController {
             @RequestParam(required = false, defaultValue = "id") String sortColumn,
             @RequestParam(required = false, defaultValue = "ASC") String sortDirection,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size){
+            @RequestParam(defaultValue = "30") int size){
                 Filter filter = new Filter(type, applianceName, modelName, color, minPrice, maxPrice);
                 if(type != null && StringUtils.hasText(type)){
                     type = type.toUpperCase();
@@ -95,12 +95,14 @@ public class ModelController {
     public ResponseEntity<Model> addModel(@PathVariable String type,
     @PathVariable String applianceName, @RequestBody Model model){
         type = type.toUpperCase();
+        Appliance.Type applianceType;
         try{
-            Appliance.Type.valueOf(type);
+            applianceType = Appliance.Type.valueOf(type);
         } catch (IllegalArgumentException e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        Appliance appliance = applianceService.getApplianceByTypeAndName(type, applianceName);
+        applianceName = applianceName.replace("-", " ");
+        Appliance appliance = applianceService.getApplianceByTypeAndName(applianceType, applianceName);
         if (appliance == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         model.setAppliance(appliance);

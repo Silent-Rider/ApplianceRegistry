@@ -34,7 +34,7 @@ public class Appliance {
     @Column(nullable = false)
     private Type type;
 
-    @OneToMany(mappedBy = "appliance", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "appliance", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     List<Model> models;
 
     public Long getId() {

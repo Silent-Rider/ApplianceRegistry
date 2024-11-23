@@ -2,6 +2,7 @@ package com.example.appliance_registry.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,8 +25,16 @@ public class ApplianceController {
         this.applianceService = applianceRepository;
     }
 
-    @PostMapping("/appliances") 
-    public ResponseEntity<Appliance> addAppliance(@RequestBody Appliance appliance){
+    @PostMapping("{type}/appliances") 
+    public ResponseEntity<Appliance> addAppliance(@PathVariable String type,
+    @RequestBody Appliance appliance){
+        type = type.toUpperCase();
+        try{
+            Appliance.Type applianceType = Appliance.Type.valueOf(type);
+            appliance.setType(applianceType);
+        } catch (IllegalArgumentException e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         Appliance savedAppliance = applianceService.saveAppliance(appliance);
         return new ResponseEntity<>(savedAppliance, HttpStatus.CREATED);
     }

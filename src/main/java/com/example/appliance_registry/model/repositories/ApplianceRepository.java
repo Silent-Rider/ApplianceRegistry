@@ -13,5 +13,5 @@ import com.example.appliance_registry.model.entities.Appliance;
 @Repository
 public interface ApplianceRepository extends JpaRepository<Appliance, Long>{
 
-    Appliance findByTypeAndName(String type, String name);
+    Appliance findByTypeAndNameIgnoreCase(Appliance.Type type, String name);
 }
