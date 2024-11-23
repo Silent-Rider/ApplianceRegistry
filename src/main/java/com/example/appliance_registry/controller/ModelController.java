@@ -4,25 +4,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.appliance_registry.model.FilterManager;
 import com.example.appliance_registry.model.entities.Appliance;
 import com.example.appliance_registry.model.entities.Model;
-import com.example.appliance_registry.model.filters.ComputerFilter;
-import com.example.appliance_registry.model.filters.Filter;
-import com.example.appliance_registry.model.filters.FridgeFilter;
-import com.example.appliance_registry.model.filters.SmartphoneFilter;
-import com.example.appliance_registry.model.filters.TVFilter;
-import com.example.appliance_registry.model.filters.VacuumFilter;
+import com.example.appliance_registry.model.filters.*;
 import com.example.appliance_registry.services.ApplianceService;
 import com.example.appliance_registry.services.ModelService;
 
@@ -56,8 +46,8 @@ public class ModelController {
             @RequestParam(required = false) String technology,
             @RequestParam(required = false) Double dustBagVolume,
             @RequestParam(required = false) Integer modesCount,
-            @RequestParam(required = false) String sortColumn,
-            @RequestParam(required = false) String sortDirection,
+            @RequestParam(required = false, defaultValue = "id") String sortColumn,
+            @RequestParam(required = false, defaultValue = "ASC") String sortDirection,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size){
                 Filter filter = new Filter(type, applianceName, modelName, color, minPrice, maxPrice);
@@ -77,18 +67,29 @@ public class ModelController {
                     }
                 }
                 Specification<Model> spec = FilterManager.byFilters(filter);
-                Sort sort = Sort.by(sortColumn);
+                Sort sort;
+                if(StringUtils.hasText(sortColumn)) sort = Sort.by(sortColumn);
+                else sort = Sort.by("id").ascending();
                 sort = sortDirection.equalsIgnoreCase("DESC") ? sort.descending() : sort.ascending();
                 PageRequest pageRequest = PageRequest.of(page, size, sort);
-                Page<Model> models = modelService.findAll(spec, pageRequest);
+                Page<Model> models = modelService.findAllModels(spec, pageRequest);
                 return ResponseEntity.ok(models);
 
     }
 
     @PostMapping("/{type}/{applianceName}/models")   
-    public ResponseEntity<String> addModel(@PathVariable("type") String type,
-    @PathVariable("applianceName") String applianceName, @RequestBody String entity){
+    public ResponseEntity<Model> addModel(@PathVariable String type,
+    @PathVariable String applianceName, @RequestBody Model model){
+        try{
+            Appliance.Type.valueOf(type.toUpperCase());
+        } catch (IllegalArgumentException e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         Appliance appliance = applianceService.getApplianceByTypeAndName(type, applianceName);
-        
+        if (appliance == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        model.setAppliance(appliance);
+        Model savedModel = modelService.saveModel(model);
+        return new ResponseEntity<>(savedModel, HttpStatus.CREATED);
     }
 }

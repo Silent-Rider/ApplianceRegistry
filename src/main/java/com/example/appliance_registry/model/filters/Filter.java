@@ -1,7 +1,7 @@
 package com.example.appliance_registry.model.filters;
 
 public class Filter {
-    private  String type;
+    private String type;
     private String applianceName;
     private String modelName;
     private String color;
@@ -10,7 +10,8 @@ public class Filter {
     
     public Filter(String type, String applianceName, String modelName, String color, Integer minPrice,
             Integer maxPrice) {
-        this.type = type.toUpperCase();
+        if(type != null)
+            this.type = type.toUpperCase();
         this.applianceName = applianceName;
         this.modelName = modelName;
         this.color = color;

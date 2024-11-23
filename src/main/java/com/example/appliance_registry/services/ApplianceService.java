@@ -19,6 +19,6 @@ public class ApplianceService {
     }
 
     public Appliance getApplianceByTypeAndName(String type, String name) {
-        return applianceRepository.findByTypeAndName(type, name);
+        return applianceRepository.findByTypeAndName(type.toUpperCase(), name);
     }
 }

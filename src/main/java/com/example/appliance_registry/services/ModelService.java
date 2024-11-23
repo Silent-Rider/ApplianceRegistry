@@ -1,5 +1,8 @@
 package com.example.appliance_registry.services;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.example.appliance_registry.model.entities.Model;
@@ -12,6 +15,10 @@ public class ModelService {
 
     public ModelService(ModelRepository modelRepository) {
         this.modelRepository = modelRepository;
+    }
+
+    public Page<Model> findAllModels(Specification<Model> spec, PageRequest pageRequest){
+        return modelRepository.findAll(spec, pageRequest);
     }
 
     public Model saveModel(Model model) {
