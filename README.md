@@ -19,4 +19,5 @@ http://localhost:8080/registry/models?minPrice=1000&color=Silver
 Для смартфона: Integer memory, Integer camerasCount,
 Для ТВ: String category, String technology,
 Для пылесоса: Double dustBagVolume, Integer modesCount.
+Также реализована сортировка с помощью параметров String sortColumn и String sortDirection(с двумя видами значений "ASC" или "DESC")
 Работает документация Swagger, при включенном приложении по адресу: http://localhost:8080/swagger-ui/index.html
