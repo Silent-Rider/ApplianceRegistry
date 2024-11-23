@@ -1,8 +1,13 @@
 package com.example.appliance_registry.model.filters;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "Фильтр моделей холодильников")
 public class FridgeFilter extends Filter{
 
+    @Schema(description = "Количество дверей")
     Integer doorsCount;
+    @Schema(description = "Тип компрессора")
     String compressorType;
 
     public FridgeFilter(String type, String applianceName, String modelName, String color, Integer minPrice,

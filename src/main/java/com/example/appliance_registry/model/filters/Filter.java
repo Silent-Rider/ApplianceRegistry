@@ -1,11 +1,20 @@
 package com.example.appliance_registry.model.filters;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "Общий фильтр для поиска моделей приборов")
 public class Filter {
+    @Schema(description = "Тип прибора", example = "SMARTPHONE")
     private String type;
+    @Schema(description = "Название прибора")
     private String applianceName;
+    @Schema(description = "Название модели")
     private String modelName;
+    @Schema(description = "Цвет")
     private String color;
+    @Schema(description = "Минимальная цена")
     private Integer minPrice;
+    @Schema(description = "Максимальная цена")
     private Integer maxPrice;
     
     public Filter(String type, String applianceName, String modelName, String color, Integer minPrice,

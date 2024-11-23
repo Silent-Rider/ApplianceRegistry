@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.appliance_registry.model.entities.Appliance;
 import com.example.appliance_registry.services.ApplianceService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 /**
  * @author silent_rider
  */
@@ -25,6 +28,12 @@ public class ApplianceController {
         this.applianceService = applianceRepository;
     }
 
+    @Operation(summary = "Добавить новый прибор",
+            description = "Добавляет новый прибор по указанному типу",
+            responses = {
+                @ApiResponse(responseCode = "201", description = "Прибор успешно создан"),
+                @ApiResponse(responseCode = "400", description = "Неверный тип прибора")
+            })
     @PostMapping("{type}/appliances") 
     public ResponseEntity<Appliance> addAppliance(@PathVariable String type,
     @RequestBody Appliance appliance){

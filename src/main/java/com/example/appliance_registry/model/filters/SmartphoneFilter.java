@@ -1,7 +1,11 @@
 package com.example.appliance_registry.model.filters;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "Фильтр моделей смартфонов")
 public class SmartphoneFilter extends Filter{
 
+    @Schema(description = "Память телефона в гигабайтах и количество камер")
     Integer memory, camerasCount;
 
     public SmartphoneFilter(String type, String applianceName, String modelName, String color, Integer minPrice,

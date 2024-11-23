@@ -17,6 +17,9 @@ import com.example.appliance_registry.model.filters.*;
 import com.example.appliance_registry.services.ApplianceService;
 import com.example.appliance_registry.services.ModelService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 /**
  * @author silent_rider
  */
@@ -31,6 +34,12 @@ public class ModelController {
         this.modelService = modelService;
         this.applianceService = applianceService;
     }
+    @Operation(summary = "Поиск моделей приборов",
+           description = "Позволяет искать модели по различным фильтрам.",
+           responses = {
+               @ApiResponse(responseCode = "200", description = "Результаты поиска моделей"),
+               @ApiResponse(responseCode = "400", description = "Неверные параметры запроса")
+           })
     @GetMapping("/models")    
     public ResponseEntity<Page<ModelDTO>> search( @RequestParam(required = false) String applianceName,
             @RequestParam(required = false) String modelName,
@@ -91,6 +100,12 @@ public class ModelController {
 
     }
 
+    @Operation(summary = "Добавить новую модель прибора",
+            description = "Добавляет новый модель прибора по указанному типа прибора и наименованию линейки",
+            responses = {
+                @ApiResponse(responseCode = "201", description = "Модель успешно добавлена в БД"),
+                @ApiResponse(responseCode = "400", description = "Неверный тип прибора")
+            })
     @PostMapping("/{type}/{applianceName}/models")   
     public ResponseEntity<Model> addModel(@PathVariable String type,
     @PathVariable String applianceName, @RequestBody Model model){

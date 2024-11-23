@@ -1,7 +1,11 @@
 package com.example.appliance_registry.model.filters;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "Фильтр моделей компьютеров")
 public class ComputerFilter extends Filter {
     
+    @Schema(description = "Категория и тип процессора")
     String category, processorType;
 
     public ComputerFilter(String type, String applianceName, String modelName, String color, Integer minPrice,

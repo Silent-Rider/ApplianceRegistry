@@ -1,8 +1,12 @@
 package com.example.appliance_registry.model.filters;
 
-public class VacuumFilter extends Filter{
+import io.swagger.v3.oas.annotations.media.Schema;
 
+@Schema(description = "Фильтр моделей компьютеров")
+public class VacuumFilter extends Filter{
+    @Schema(description = "Объём пылесборника")
     Double dustBagVolume;
+    @Schema(description = "Количество режимов")
     Integer modesCount;
     
     public VacuumFilter(String type, String applianceName, String modelName, String color, Integer minPrice,

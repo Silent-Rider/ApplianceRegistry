@@ -1,6 +1,0 @@
-2024-11-24 02:07:01 - INFO - Tomcat initialized with port 8080 (http)
-2024-11-24 02:07:06 - INFO - Tomcat started on port 8080 (http) with context path '/'
-2024-11-24 02:07:45 - WARN - Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
-	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
-	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
-
