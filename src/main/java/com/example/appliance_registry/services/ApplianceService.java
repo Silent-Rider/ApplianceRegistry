@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.appliance_registry.model.entities.Appliance;
 import com.example.appliance_registry.model.repositories.ApplianceRepository;
+import com.example.appliance_registry.model.entities.Type;
 
 @Service
 public class ApplianceService {
@@ -18,7 +19,7 @@ public class ApplianceService {
         return applianceRepository.save(appliance);
     }
 
-    public Appliance getApplianceByTypeAndName(Appliance.Type type, String name) {
+    public Appliance getApplianceByTypeAndName(Type type, String name) {
         return applianceRepository.findByTypeAndNameIgnoreCase(type, name);
     }
 }

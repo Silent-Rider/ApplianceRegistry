@@ -1,12 +1,15 @@
 package com.example.appliance_registry.model.entities;
 
 import jakarta.persistence.*;
+import lombok.Data;
+
 import java.util.List;
 
 /**
  * @author silent_rider
  */
 
+@Data
 @Entity
 @Table(name = "appliances")
 public class Appliance {
@@ -36,76 +39,4 @@ public class Appliance {
 
     @OneToMany(mappedBy = "appliance", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     List<Model> models;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getManufacturer() {
-        return manufacturer;
-    }
-
-    public void setManufacturer(String manufacturer) {
-        this.manufacturer = manufacturer;
-    }
-
-    public Boolean getAvailableOnline() {
-        return availableOnline;
-    }
-
-    public void setAvailableOnline(Boolean availableOnline) {
-        this.availableOnline = availableOnline;
-    }
-
-    public Boolean getInstallmentOption() {
-        return installmentOption;
-    }
-
-    public void setInstallmentOption(Boolean installmentOption) {
-        this.installmentOption = installmentOption;
-    }
-
-    public Type getType() {
-        return type;
-    }
-
-    public void setType(Type type) {
-        this.type = type;
-    }
-
-    public List<Model> getModels() {
-        return models;
-    }
-
-    public void setModels(List<Model> models) {
-        this.models = models;
-    }
-
-    public enum Type{
-        COMPUTER,
-        FRIDGE,
-        SMARTPHONE,
-        TV,
-        VACUUM
-    }
 }

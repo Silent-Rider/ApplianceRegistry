@@ -1,4 +1,4 @@
-package com.example.appliance_registry.model;
+package com.example.appliance_registry.services;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,12 +7,12 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
 
 import com.example.appliance_registry.model.entities.Model;
-import com.example.appliance_registry.model.filters.ComputerFilter;
-import com.example.appliance_registry.model.filters.Filter;
-import com.example.appliance_registry.model.filters.FridgeFilter;
-import com.example.appliance_registry.model.filters.SmartphoneFilter;
-import com.example.appliance_registry.model.filters.TVFilter;
-import com.example.appliance_registry.model.filters.VacuumFilter;
+import com.example.appliance_registry.services.filters.ComputerFilter;
+import com.example.appliance_registry.services.filters.Filter;
+import com.example.appliance_registry.services.filters.FridgeFilter;
+import com.example.appliance_registry.services.filters.SmartphoneFilter;
+import com.example.appliance_registry.services.filters.TVFilter;
+import com.example.appliance_registry.services.filters.VacuumFilter;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.JoinType;

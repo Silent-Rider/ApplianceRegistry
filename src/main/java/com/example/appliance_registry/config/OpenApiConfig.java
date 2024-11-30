@@ -1,4 +1,4 @@
-package com.example.appliance_registry;
+package com.example.appliance_registry.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +16,7 @@ public class OpenApiConfig {
         return new OpenAPI()
                 .info(new Info()
                 .title("Appliance Registry API")
-                .version("1.0")
+                .version("1.0.0")
                 .description("API для работы с реестром техники"));
     }
 }

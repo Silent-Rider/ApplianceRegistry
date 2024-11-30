@@ -10,12 +10,13 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.appliance_registry.dto.*;
-import com.example.appliance_registry.model.FilterManager;
 import com.example.appliance_registry.model.entities.Appliance;
+import com.example.appliance_registry.model.entities.Type;
 import com.example.appliance_registry.model.entities.Model;
-import com.example.appliance_registry.model.filters.*;
 import com.example.appliance_registry.services.ApplianceService;
+import com.example.appliance_registry.services.FilterManager;
 import com.example.appliance_registry.services.ModelService;
+import com.example.appliance_registry.services.filters.*;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -40,8 +41,8 @@ public class ModelController {
                @ApiResponse(responseCode = "200", description = "Результаты поиска моделей"),
                @ApiResponse(responseCode = "400", description = "Неверные параметры запроса")
            })
-    @GetMapping("/models")    
-    public ResponseEntity<Page<ModelDTO>> search( @RequestParam(required = false) String applianceName,
+    @PostMapping("/models")    
+    public ResponseEntity<Page<Model>> search( @RequestParam(required = false) String applianceName,
             @RequestParam(required = false) String modelName,
             @RequestParam(required = false) String type,
             @RequestParam(required = false) String color,
@@ -56,7 +57,7 @@ public class ModelController {
             @RequestParam(required = false) String technology,
             @RequestParam(required = false) Double dustBagVolume,
             @RequestParam(required = false) Integer modesCount,
-            @RequestParam(required = false, defaultValue = "id") String sortColumn,
+            @RequestParam(required = false) String sortColumn,
             @RequestParam(required = false, defaultValue = "ASC") String sortDirection,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "30") int size){
@@ -78,50 +79,38 @@ public class ModelController {
                 }
                 Specification<Model> spec = FilterManager.byFilters(filter);
                 Sort sort;
-                if(StringUtils.hasText(sortColumn)) sort = Sort.by(sortColumn);
+                if(StringUtils.hasText(sortColumn)){
+                    sort = Sort.by(sortColumn);
+                    sort = sortDirection.equalsIgnoreCase("DESC") ? sort.descending() : sort.ascending();
+                }
                 else sort = Sort.by("id").ascending();
-                sort = sortDirection.equalsIgnoreCase("DESC") ? sort.descending() : sort.ascending();
                 PageRequest pageRequest = PageRequest.of(page, size, sort);
                 Page<Model> models = modelService.findAllModels(spec, pageRequest);
-                Page<ModelDTO> modelDTOs = models.map(model -> {
-                    ModelDTO dto = null;
-                    switch(model.getAppliance().getType()){
-                        case Appliance.Type.COMPUTER -> dto = new ComputerDTO();
-                        case Appliance.Type.FRIDGE -> dto = new FridgeDTO();
-                        case Appliance.Type.SMARTPHONE -> dto = new SmartphoneDTO();
-                        case Appliance.Type.TV -> dto = new TVDTO();
-                        case Appliance.Type.VACUUM -> dto = new VacuumDTO();
-                    }
-                    if(dto != null)
-                        dto.loadFromModel(model);
-                    return dto;
-                });
-                return ResponseEntity.ok(modelDTOs);
+                return ResponseEntity.ok(models);
 
     }
 
     @Operation(summary = "Добавить новую модель прибора",
-            description = "Добавляет новый модель прибора по указанному типа прибора и наименованию линейки",
+            description = "Добавляет новый модель прибора по указанному в пути типу прибора и " +
+            "наименованию линейки, указанной в качестве параметра запроса",
             responses = {
                 @ApiResponse(responseCode = "201", description = "Модель успешно добавлена в БД"),
                 @ApiResponse(responseCode = "400", description = "Неверный тип прибора")
             })
-    @PostMapping("/{type}/{applianceName}/models")   
-    public ResponseEntity<Model> addModel(@PathVariable String type,
-    @PathVariable String applianceName, @RequestBody Model model){
-        type = type.toUpperCase();
-        Appliance.Type applianceType;
+    @PostMapping("/models")   
+    public ResponseEntity<Model> addModel(@RequestParam String applianceName, @RequestBody Model model){
+        String type = model.getType().toUpperCase().trim();
+        Type applianceType;
+        Model savedModel;
         try{
-            applianceType = Appliance.Type.valueOf(type);
+            applianceType = Type.valueOf(type);
+            Appliance appliance = applianceService.getApplianceByTypeAndName(applianceType, applianceName);
+            if (appliance == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            model.setAppliance(appliance);
+            savedModel = modelService.saveModel(model);
         } catch (IllegalArgumentException e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        applianceName = applianceName.replace("-", " ");
-        Appliance appliance = applianceService.getApplianceByTypeAndName(applianceType, applianceName);
-        if (appliance == null)
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        model.setAppliance(appliance);
-        Model savedModel = modelService.saveModel(model);
         return new ResponseEntity<>(savedModel, HttpStatus.CREATED);
     }
 }

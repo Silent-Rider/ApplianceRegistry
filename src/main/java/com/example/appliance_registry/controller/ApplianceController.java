@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.appliance_registry.model.entities.Appliance;
+import com.example.appliance_registry.model.entities.Type;
 import com.example.appliance_registry.services.ApplianceService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,12 +35,12 @@ public class ApplianceController {
                 @ApiResponse(responseCode = "201", description = "Прибор успешно создан"),
                 @ApiResponse(responseCode = "400", description = "Неверный тип прибора")
             })
-    @PostMapping("{type}/appliances") 
-    public ResponseEntity<Appliance> addAppliance(@PathVariable String type,
+    @PostMapping("/appliances/{type}") 
+    public ResponseEntity<Appliance> addAppliance(@PathVariable String type, 
     @RequestBody Appliance appliance){
         type = type.toUpperCase();
         try{
-            Appliance.Type applianceType = Appliance.Type.valueOf(type);
+            Type applianceType = Type.valueOf(type);
             appliance.setType(applianceType);
         } catch (IllegalArgumentException e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
