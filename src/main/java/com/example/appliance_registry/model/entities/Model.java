@@ -1,7 +1,6 @@
 package com.example.appliance_registry.model.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import jakarta.persistence.Column;
@@ -52,10 +51,6 @@ public class Model {
     @Column(nullable = false)
     private String type;
 
-    @JsonProperty(value = "applianceName")
-    public String applianceName(){
-        return appliance.getName();
-    }
-
-
+    @Column(name = "appliance_name", nullable = false)
+    private String applianceName;
 }

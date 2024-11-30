@@ -31,10 +31,6 @@ public class ModelService {
     private final SmartphoneRepository smartphoneRepository;
     private final VacuumRepository vacuumRepository;
 
-    public Page<Model> findAllModels(){
-        
-    }
-
     public Page<Computer> findAllComputers(Specification<Computer> spec, PageRequest pageRequest){
         return computerRepository.findAll(spec, pageRequest);
     }

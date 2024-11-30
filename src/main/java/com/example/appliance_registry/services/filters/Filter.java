@@ -14,7 +14,7 @@ import lombok.Data;
     @JsonSubTypes.Type(value = SmartphoneFilter.class, name = "smartphone"),
     @JsonSubTypes.Type(value = VacuumFilter.class, name = "vacuum")
 })
-public class Filter {
+public abstract class Filter {
     
     private String type;
     private String applianceName;

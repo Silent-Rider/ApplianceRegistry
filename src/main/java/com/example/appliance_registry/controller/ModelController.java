@@ -3,16 +3,14 @@ package com.example.appliance_registry.controller;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.appliance_registry.dto.*;
 import com.example.appliance_registry.model.entities.Appliance;
-import com.example.appliance_registry.model.entities.Type;
 import com.example.appliance_registry.model.entities.Model;
+import com.example.appliance_registry.model.entities.Type;
 import com.example.appliance_registry.services.ApplianceService;
 import com.example.appliance_registry.services.FilterManager;
 import com.example.appliance_registry.services.ModelService;
@@ -41,43 +39,12 @@ public class ModelController {
                @ApiResponse(responseCode = "200", description = "Результаты поиска моделей"),
                @ApiResponse(responseCode = "400", description = "Неверные параметры запроса")
            })
-    @PostMapping("/models")    
-    public ResponseEntity<Page<Model>> search( @RequestParam(required = false) String applianceName,
-            @RequestParam(required = false) String modelName,
-            @RequestParam(required = false) String type,
-            @RequestParam(required = false) String color,
-            @RequestParam(required = false) Integer minPrice,
-            @RequestParam(required = false) Integer maxPrice,
-            @RequestParam(required = false) String category,
-            @RequestParam(required = false) String processorType,
-            @RequestParam(required = false) Integer doorsCount,
-            @RequestParam(required = false) String compressorType,
-            @RequestParam(required = false) Integer memory,
-            @RequestParam(required = false) Integer camerasCount,
-            @RequestParam(required = false) String technology,
-            @RequestParam(required = false) Double dustBagVolume,
-            @RequestParam(required = false) Integer modesCount,
+    @PostMapping("/models/get")    
+    public ResponseEntity<Page<? extends Model>> search(@RequestBody Filter filter,
             @RequestParam(required = false) String sortColumn,
             @RequestParam(required = false, defaultValue = "ASC") String sortDirection,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "30") int size){
-                Filter filter = new Filter(type, applianceName, modelName, color, minPrice, maxPrice);
-                if(type != null && StringUtils.hasText(type)){
-                    type = type.toUpperCase();
-                    switch(type){
-                        case "COMPUTER" -> filter = new ComputerFilter(type, applianceName, modelName, 
-                        color, minPrice, maxPrice, category, processorType);
-                        case "FRIDGE" -> filter = new FridgeFilter(type, applianceName, modelName, 
-                        color, minPrice, maxPrice, doorsCount, compressorType);
-                        case "SMARTPHONE" -> filter = new SmartphoneFilter(type, applianceName, 
-                        modelName, color, minPrice, maxPrice, memory, camerasCount);
-                        case "TV" -> filter = new TVFilter(type, applianceName, modelName, 
-                        color, minPrice, maxPrice, category, technology);
-                        case "VACUUM" -> filter = new VacuumFilter(type, applianceName, modelName, 
-                        color, minPrice, maxPrice, dustBagVolume, modesCount);
-                    }
-                }
-                Specification<Model> spec = FilterManager.byFilters(filter);
                 Sort sort;
                 if(StringUtils.hasText(sortColumn)){
                     sort = Sort.by(sortColumn);
@@ -85,7 +52,33 @@ public class ModelController {
                 }
                 else sort = Sort.by("id").ascending();
                 PageRequest pageRequest = PageRequest.of(page, size, sort);
-                Page<Model> models = modelService.findAllModels(spec, pageRequest);
+                Page<? extends Model> models = null;
+                String type = filter.getType();
+                if(type != null && StringUtils.hasText(type)){
+                    type = type.toUpperCase();
+                    switch(type){
+                        case "COMPUTER" -> {
+                            var spec = FilterManager.byComputerFilter((ComputerFilter)filter);
+                            models = modelService.findAllComputers(spec, pageRequest);
+                        }
+                        case "FRIDGE" -> {
+                            var spec = FilterManager.byFridgeFilter((FridgeFilter)filter);
+                            models = modelService.findAllFridges(spec, pageRequest);
+                        }
+                        case "SMARTPHONE" -> {
+                            var spec = FilterManager.bySmartphoneFilter((SmartphoneFilter)filter);
+                            models = modelService.findAllSmartphones(spec, pageRequest);
+                        }
+                        case "TV" -> {
+                            var spec = FilterManager.byTVFilter((TVFilter)filter);
+                            models = modelService.findAllTVs(spec, pageRequest);
+                        }
+                        case "VACUUM" -> {
+                            var spec = FilterManager.byVacuumFilter((VacuumFilter)filter);
+                            models = modelService.findAllVacuums(spec, pageRequest);
+                        }
+                    } 
+                } else return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                 return ResponseEntity.ok(models);
 
     }
@@ -97,9 +90,10 @@ public class ModelController {
                 @ApiResponse(responseCode = "201", description = "Модель успешно добавлена в БД"),
                 @ApiResponse(responseCode = "400", description = "Неверный тип прибора")
             })
-    @PostMapping("/models")   
-    public ResponseEntity<Model> addModel(@RequestParam String applianceName, @RequestBody Model model){
+    @PostMapping("/models/post")   
+    public ResponseEntity<Model> addModel(@RequestBody Model model){
         String type = model.getType().toUpperCase().trim();
+        String applianceName = model.getApplianceName();
         Type applianceType;
         Model savedModel;
         try{
