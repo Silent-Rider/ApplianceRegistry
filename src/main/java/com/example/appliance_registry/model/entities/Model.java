@@ -1,15 +1,10 @@
 package com.example.appliance_registry.model.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.example.appliance_registry.model.entities.models.*;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.*;
 import lombok.Data;
 
 /**
@@ -18,8 +13,15 @@ import lombok.Data;
 
 @Data
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = Computer.class, name = "computer"),
+    @JsonSubTypes.Type(value = TV.class, name = "tv"),
+    @JsonSubTypes.Type(value = Fridge.class, name = "fridge"),
+    @JsonSubTypes.Type(value = Smartphone.class, name = "smartphone"),
+    @JsonSubTypes.Type(value = Vacuum.class, name = "vacuum")
+})
 @MappedSuperclass
-public class Model {
+public abstract class Model {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,14 +45,11 @@ public class Model {
     @Column(name = "in_stock", nullable = false)
     private Boolean inStock;
 
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "appliance_id", nullable = false)
-    private Appliance appliance;
+    @Column(name = "appliance_name", nullable = false)
+    private String applianceName;
 
     @Column(nullable = false)
     private String type;
 
-    @Column(name = "appliance_name", nullable = false)
-    private String applianceName;
+    public abstract void setAppliance(Appliance appliance);
 }

@@ -1,9 +1,11 @@
 package com.example.appliance_registry.model.entities;
 
+import java.util.List;
+
+import com.example.appliance_registry.model.entities.models.*;
+
 import jakarta.persistence.*;
 import lombok.Data;
-
-import java.util.List;
 
 /**
  * @author silent_rider
@@ -38,5 +40,17 @@ public class Appliance {
     private Type type;
 
     @OneToMany(mappedBy = "appliance", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    List<Model> models;
+    List<Computer> computerModels;
+
+    @OneToMany(mappedBy = "appliance", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    List<Fridge> fridgeModels;
+
+    @OneToMany(mappedBy = "appliance", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    List<Smartphone> smartphoneModels;
+
+    @OneToMany(mappedBy = "appliance", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    List<TV> tvModels;
+
+    @OneToMany(mappedBy = "appliance", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    List<Vacuum> vacuumModels;
 }

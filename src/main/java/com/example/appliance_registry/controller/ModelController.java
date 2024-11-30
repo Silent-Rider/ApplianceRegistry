@@ -53,9 +53,9 @@ public class ModelController {
                 else sort = Sort.by("id").ascending();
                 PageRequest pageRequest = PageRequest.of(page, size, sort);
                 Page<? extends Model> models = null;
-                String type = filter.getType();
+                String type = filter.getClass().getSimpleName().toUpperCase().replace("FILTER", "").trim();
+                filter.setType(type);
                 if(type != null && StringUtils.hasText(type)){
-                    type = type.toUpperCase();
                     switch(type){
                         case "COMPUTER" -> {
                             var spec = FilterManager.byComputerFilter((ComputerFilter)filter);
@@ -92,7 +92,8 @@ public class ModelController {
             })
     @PostMapping("/models/post")   
     public ResponseEntity<Model> addModel(@RequestBody Model model){
-        String type = model.getType().toUpperCase().trim();
+        String type = model.getClass().getSimpleName().toUpperCase().trim();
+        model.setType(type);
         String applianceName = model.getApplianceName();
         Type applianceType;
         Model savedModel;
