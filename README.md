@@ -35,7 +35,7 @@
 Уникальные атрибуты телевизора
 ● String category - категория телевизора
 ● String technology - технология
-3. Поиск моделей по различным фильтрам - POST-запрос по адресу localhost:8080/registry/models/get,
+3. Поиск моделей по различным фильтрам - POST-запрос по адресу http://localhost:8080/registry/models/get,
 существуют 4 параметра, среди которых 2 для сортировки:
 ♦ String sortColumn - колонка сортировки, по умолчанию id
 ♦ String sortDirection - направление сортировки (ASC или DESC), по умолчанию ASC
