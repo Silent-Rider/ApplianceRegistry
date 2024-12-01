@@ -9,6 +9,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
+      - ./dump.sql:/docker-entrypoint-initdb.d/dump.sql
       - db_data:/var/lib/postgresql/data
     networks:
       - appliance_registry_network
