@@ -23,7 +23,7 @@ services:
       SPRING_DATASOURCE_USERNAME: silent_rider
       SPRING_DATASOURCE_PASSWORD: password
     ports:
-      -"8080:8080"
+      - "8080:8080"
     networks:
       - appliance_registry_network
 
